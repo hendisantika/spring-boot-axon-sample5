@@ -1,9 +1,13 @@
 package com.hendisantika.aggregate;
 
+import com.hendisantika.command.CreateAccountCommand;
+import com.hendisantika.event.AccountCreatedEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.math.BigDecimal;
@@ -28,4 +32,16 @@ public class BankAccountAggregate {
     private UUID id;
     private BigDecimal balance;
     private String owner;
+
+    @CommandHandler
+    public BankAccountAggregate(CreateAccountCommand command) {
+
+        AggregateLifecycle.apply(
+                new AccountCreatedEvent(
+                        command.getAccountId(),
+                        command.getInitialBalance(),
+                        command.getOwner()
+                )
+        );
+    }
 }
