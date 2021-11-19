@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
@@ -43,5 +44,12 @@ public class BankAccountAggregate {
                         command.getOwner()
                 )
         );
+    }
+
+    @EventSourcingHandler
+    public void on(AccountCreatedEvent event) {
+        this.id = event.getId();
+        this.owner = event.getOwner();
+        this.balance = event.getInitialBalance();
     }
 }
