@@ -1,9 +1,15 @@
 package com.hendisantika.service;
 
+import com.hendisantika.entity.BankAccount;
 import lombok.AllArgsConstructor;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
+
+import static com.hendisantika.util.ServiceUtils.formatUuid;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,4 +25,11 @@ import org.springframework.stereotype.Service;
 public class AccountQueryService {
     private final QueryGateway queryGateway;
     private final EventStore eventStore;
+
+    public CompletableFuture<BankAccount> findById(String accountId) {
+        return this.queryGateway.query(
+                new FindBankAccountQuery(formatUuid(accountId)),
+                ResponseTypes.instanceOf(BankAccount.class)
+        );
+    }
 }
