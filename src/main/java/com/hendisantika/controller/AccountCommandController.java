@@ -1,10 +1,19 @@
 package com.hendisantika.controller;
 
+import com.hendisantika.dto.AccountCreationDTO;
+import com.hendisantika.entity.BankAccount;
 import com.hendisantika.service.AccountCommandService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.CompletableFuture;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,5 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class AccountCommandController {
     private final AccountCommandService accountCommandService;
+
+    @PostMapping
+    @ResponseStatus(value = CREATED)
+    public CompletableFuture<BankAccount> createAccount(@RequestBody AccountCreationDTO creationDTO) {
+        return this.accountCommandService.createAccount(creationDTO);
+    }
 
 }
