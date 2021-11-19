@@ -1,11 +1,14 @@
 package com.hendisantika.controller;
 
 import com.hendisantika.dto.AccountCreationDTO;
+import com.hendisantika.dto.MoneyAmountDTO;
 import com.hendisantika.entity.BankAccount;
 import com.hendisantika.service.AccountCommandService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,6 +38,12 @@ public class AccountCommandController {
     @ResponseStatus(value = CREATED)
     public CompletableFuture<BankAccount> createAccount(@RequestBody AccountCreationDTO creationDTO) {
         return this.accountCommandService.createAccount(creationDTO);
+    }
+
+    @PutMapping(value = "/credit/{accountId}")
+    public CompletableFuture<String> creditMoneyToAccount(@PathVariable(value = "accountId") String accountId,
+                                                          @RequestBody MoneyAmountDTO moneyCreditDTO) {
+        return this.accountCommandService.creditMoneyToAccount(accountId, moneyCreditDTO);
     }
 
 }
