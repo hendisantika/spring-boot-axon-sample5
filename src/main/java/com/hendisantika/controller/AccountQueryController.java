@@ -3,8 +3,12 @@ package com.hendisantika.controller;
 import com.hendisantika.service.AccountQueryService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,4 +27,8 @@ public class AccountQueryController {
 
     private final AccountQueryService accountQueryService;
 
+    @GetMapping("/{accountId}")
+    public CompletableFuture<BankAccount> findById(@PathVariable("accountId") String accountId) {
+        return this.accountQueryService.findById(accountId);
+    }
 }
