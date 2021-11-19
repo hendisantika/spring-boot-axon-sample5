@@ -2,6 +2,7 @@ package com.hendisantika.service;
 
 import com.hendisantika.command.CreateAccountCommand;
 import com.hendisantika.command.CreditMoneyCommand;
+import com.hendisantika.command.DebitMoneyCommand;
 import com.hendisantika.dto.AccountCreationDTO;
 import com.hendisantika.dto.MoneyAmountDTO;
 import com.hendisantika.entity.BankAccount;
@@ -44,4 +45,11 @@ public class AccountCommandService {
         ));
     }
 
+    public CompletableFuture<String> debitMoneyFromAccount(String accountId,
+                                                           MoneyAmountDTO moneyDebitDTO) {
+        return this.commandGateway.send(new DebitMoneyCommand(
+                formatUuid(accountId),
+                moneyDebitDTO.getAmount()
+        ));
+    }
 }
