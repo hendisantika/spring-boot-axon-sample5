@@ -3,11 +3,14 @@ package com.hendisantika.service;
 import com.hendisantika.entity.BankAccount;
 import lombok.AllArgsConstructor;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.messaging.Message;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static com.hendisantika.util.ServiceUtils.formatUuid;
 
@@ -31,5 +34,13 @@ public class AccountQueryService {
                 new FindBankAccountQuery(formatUuid(accountId)),
                 ResponseTypes.instanceOf(BankAccount.class)
         );
+    }
+
+    public List<Object> listEventsForAccount(String accountId) {
+        return this.eventStore
+                .readEvents(formatUuid(accountId).toString())
+                .asStream()
+                .map(Message::getPayload)
+                .collect(Collectors.toList());
     }
 }
