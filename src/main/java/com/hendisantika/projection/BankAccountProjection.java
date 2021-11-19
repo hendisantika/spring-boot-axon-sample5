@@ -5,10 +5,12 @@ import com.hendisantika.event.AccountCreatedEvent;
 import com.hendisantika.event.MoneyCreditedEvent;
 import com.hendisantika.event.MoneyDebitedEvent;
 import com.hendisantika.exception.AccountNotFoundException;
+import com.hendisantika.query.FindBankAccountQuery;
 import com.hendisantika.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
@@ -66,5 +68,11 @@ public class BankAccountProjection {
         } else {
             throw new AccountNotFoundException(event.getId());
         }
+    }
+
+    @QueryHandler
+    public BankAccount handle(FindBankAccountQuery query) {
+        log.debug("Handling FindBankAccountQuery query: {}", query);
+        return this.repository.findById(query.getAccountId()).orElse(null);
     }
 }
