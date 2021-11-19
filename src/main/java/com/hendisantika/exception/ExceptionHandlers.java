@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -31,5 +32,18 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return buildResponseEntity(
                 new ResponseError(NOT_FOUND, REQUESTED_ACCOUNT_NOT_FOUND)
         );
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<Object> handleInsufficientBalance(InsufficientBalanceException ex) {
+        log.error(INSUFFICIENT_BALANCE_EXCEPTION);
+
+        return buildResponseEntity(
+                new ResponseError(BAD_REQUEST, INSUFFICIENT_BALANCE_EXCEPTION)
+        );
+    }
+
+    private ResponseEntity<Object> buildResponseEntity(ResponseError responseError) {
+        return new ResponseEntity<>(responseError, responseError.getStatus());
     }
 }
