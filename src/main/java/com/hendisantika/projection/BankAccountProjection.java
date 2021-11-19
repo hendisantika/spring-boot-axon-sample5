@@ -22,4 +22,6 @@ public class BankAccountProjection {
 
     private final BankAccountRepository repository;
     private final QueryUpdateEmitter updateEmitter;
+
+
 }
