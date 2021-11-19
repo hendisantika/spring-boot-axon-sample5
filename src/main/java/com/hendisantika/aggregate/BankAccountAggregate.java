@@ -6,6 +6,7 @@ import com.hendisantika.command.DebitMoneyCommand;
 import com.hendisantika.event.AccountCreatedEvent;
 import com.hendisantika.event.MoneyCreditedEvent;
 import com.hendisantika.event.MoneyDebitedEvent;
+import com.hendisantika.exception.InsufficientBalanceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -80,5 +81,13 @@ public class BankAccountAggregate {
                         command.getDebitAmount()
                 )
         );
+    }
+
+    @EventSourcingHandler
+    public void on(MoneyDebitedEvent event) throws InsufficientBalanceException {
+        if (this.balance.compareTo(event.getDebitAmount()) < 0) {
+            throw new InsufficientBalanceException(event.getId(), event.getDebitAmount());
+        }
+        this.balance = this.balance.subtract(event.getDebitAmount());
     }
 }
