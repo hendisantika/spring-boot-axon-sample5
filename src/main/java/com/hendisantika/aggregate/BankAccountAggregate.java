@@ -1,7 +1,9 @@
 package com.hendisantika.aggregate;
 
 import com.hendisantika.command.CreateAccountCommand;
+import com.hendisantika.command.CreditMoneyCommand;
 import com.hendisantika.event.AccountCreatedEvent;
+import com.hendisantika.event.MoneyCreditedEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,5 +53,15 @@ public class BankAccountAggregate {
         this.id = event.getId();
         this.owner = event.getOwner();
         this.balance = event.getInitialBalance();
+    }
+
+    @CommandHandler
+    public void handle(CreditMoneyCommand command) {
+        AggregateLifecycle.apply(
+                new MoneyCreditedEvent(
+                        command.getAccountId(),
+                        command.getCreditAmount()
+                )
+        );
     }
 }
