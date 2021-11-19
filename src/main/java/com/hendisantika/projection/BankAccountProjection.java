@@ -3,6 +3,8 @@ package com.hendisantika.projection;
 import com.hendisantika.entity.BankAccount;
 import com.hendisantika.event.AccountCreatedEvent;
 import com.hendisantika.event.MoneyCreditedEvent;
+import com.hendisantika.event.MoneyDebitedEvent;
+import com.hendisantika.exception.AccountNotFoundException;
 import com.hendisantika.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,6 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.util.Optional;
 
 /**
@@ -48,6 +49,19 @@ public class BankAccountProjection {
         if (optionalBankAccount.isPresent()) {
             BankAccount bankAccount = optionalBankAccount.get();
             bankAccount.setBalance(bankAccount.getBalance().add(event.getCreditAmount()));
+            this.repository.save(bankAccount);
+        } else {
+            throw new AccountNotFoundException(event.getId());
+        }
+    }
+
+    @EventHandler
+    public void on(MoneyDebitedEvent event) throws AccountNotFoundException {
+        log.debug("Handling a Bank Account Debit command {}", event.getId());
+        Optional<BankAccount> optionalBankAccount = this.repository.findById(event.getId());
+        if (optionalBankAccount.isPresent()) {
+            BankAccount bankAccount = optionalBankAccount.get();
+            bankAccount.setBalance(bankAccount.getBalance().subtract(event.getDebitAmount()));
             this.repository.save(bankAccount);
         } else {
             throw new AccountNotFoundException(event.getId());
