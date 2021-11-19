@@ -46,4 +46,9 @@ public class AccountCommandController {
         return this.accountCommandService.creditMoneyToAccount(accountId, moneyCreditDTO);
     }
 
+    @PutMapping(value = "/debit/{accountId}")
+    public CompletableFuture<String> debitMoneyFromAccount(@PathVariable(value = "accountId") String accountId,
+                                                           @RequestBody MoneyAmountDTO moneyDebitDTO) {
+        return this.accountCommandService.debitMoneyFromAccount(accountId, moneyDebitDTO);
+    }
 }
