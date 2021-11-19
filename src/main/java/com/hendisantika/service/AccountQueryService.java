@@ -1,6 +1,7 @@
 package com.hendisantika.service;
 
 import com.hendisantika.entity.BankAccount;
+import com.hendisantika.query.FindBankAccountQuery;
 import lombok.AllArgsConstructor;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.messaging.Message;
