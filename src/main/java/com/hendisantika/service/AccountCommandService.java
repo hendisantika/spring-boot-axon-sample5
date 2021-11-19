@@ -1,6 +1,9 @@
 package com.hendisantika.service;
 
+import com.hendisantika.command.CreateAccountCommand;
+import com.hendisantika.command.CreditMoneyCommand;
 import com.hendisantika.dto.AccountCreationDTO;
+import com.hendisantika.dto.MoneyAmountDTO;
 import com.hendisantika.entity.BankAccount;
 import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -8,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import static com.hendisantika.util.ServiceUtils.formatUuid;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,4 +35,13 @@ public class AccountCommandService {
                 creationDTO.getOwner()
         ));
     }
+
+    public CompletableFuture<String> creditMoneyToAccount(String accountId,
+                                                          MoneyAmountDTO moneyCreditDTO) {
+        return this.commandGateway.send(new CreditMoneyCommand(
+                formatUuid(accountId),
+                moneyCreditDTO.getAmount()
+        ));
+    }
+
 }
