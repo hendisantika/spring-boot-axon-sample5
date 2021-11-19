@@ -2,12 +2,16 @@ package com.hendisantika.projection;
 
 import com.hendisantika.entity.BankAccount;
 import com.hendisantika.event.AccountCreatedEvent;
+import com.hendisantika.event.MoneyCreditedEvent;
 import com.hendisantika.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
+
+import javax.security.auth.login.AccountNotFoundException;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,4 +41,16 @@ public class BankAccountProjection {
         this.repository.save(bankAccount);
     }
 
+    @EventHandler
+    public void on(MoneyCreditedEvent event) throws AccountNotFoundException {
+        log.debug("Handling a Bank Account Credit command {}", event.getId());
+        Optional<BankAccount> optionalBankAccount = this.repository.findById(event.getId());
+        if (optionalBankAccount.isPresent()) {
+            BankAccount bankAccount = optionalBankAccount.get();
+            bankAccount.setBalance(bankAccount.getBalance().add(event.getCreditAmount()));
+            this.repository.save(bankAccount);
+        } else {
+            throw new AccountNotFoundException(event.getId());
+        }
+    }
 }
