@@ -77,7 +77,7 @@
         <dependency>
             <groupId>org.axonframework</groupId>
             <artifactId>axon-test</artifactId>
-            <version>4.10.0</version>
+            <version>4.10.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
